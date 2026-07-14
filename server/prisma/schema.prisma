@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Notebook {
+  id        String    @id @default(uuid())
+  title     String
+  createdAt DateTime  @default(now())
+  sections  Section[]
+}
+
+model Section {
+  id         String   @id @default(uuid())
+  title      String
+  notebookId String
+  notebook   Notebook @relation(fields: [notebookId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  pages      Page[]
+}
+
+model Page {
+  id              String   @id @default(uuid())
+  title           String
+  content         String   @default("")
+  revisionContent String?
+  sectionId       String
+  section         Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

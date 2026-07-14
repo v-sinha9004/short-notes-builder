@@ -1,0 +1,10 @@
+@import './styles/theme.css';
+@import './styles/layout.css';
+
+/* Override vite default */
+#root {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
