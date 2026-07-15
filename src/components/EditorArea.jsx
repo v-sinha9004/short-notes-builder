@@ -11,9 +11,26 @@ export default function EditorArea() {
   const [viewMode, setViewMode] = useState('original'); // 'original' or 'revision'
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [modelOptions] = useState(['gpt-5.5', 'gpt-4.1', 'gpt-4o', 'chatgpt-4o-latest', 'gpt-4o-mini']);
-  const [selectedModel, setSelectedModel] = useState('gpt-5.5');
+  const [selectedCategory, setSelectedCategory] = useState('Premium');
+  const [selectedModel, setSelectedModel] = useState('gpt-5.4');
   const [errorMsg, setErrorMsg] = useState('');
+
+  const PAID_MODELS = [
+    'gpt-5.5', 'chatgpt-4o-latest'
+  ];
+  const PREMIUM_MODELS = [
+    'gpt-5.4', 'gpt-5.2', 'gpt-5.1', 'gpt-5.1-codex', 'gpt-5', 'gpt-5-codex', 'gpt-5-chat-latest', 'gpt-4.1', 'gpt-4o', 'o1', 'o3'
+  ];
+  const FAST_MODELS = [
+    'gpt-5.4-mini', 'gpt-5.4-nano', 'gpt-5.1-codex-mini', 'gpt-5-mini', 'gpt-5-nano', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4o-mini', 'o1-mini', 'o3-mini', 'o4-mini', 'codex-mini-latest'
+  ];
+
+  const currentModels = selectedCategory === 'Paid' ? PAID_MODELS : (selectedCategory === 'Premium' ? PREMIUM_MODELS : FAST_MODELS);
+
+  // Reset model when category changes
+  useEffect(() => {
+    setSelectedModel(selectedCategory === 'Paid' ? PAID_MODELS[0] : (selectedCategory === 'Premium' ? PREMIUM_MODELS[0] : FAST_MODELS[0]));
+  }, [selectedCategory]);
   
   // They both use Quill now, so they hold HTML strings
   const [localContent, setLocalContent] = useState('');
@@ -200,22 +217,56 @@ export default function EditorArea() {
             </>
           )}
 
-          <select 
-            value={selectedModel} 
-            onChange={(e) => setSelectedModel(e.target.value)}
-            style={{
-              padding: '8px 12px',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--border-color)',
-              backgroundColor: 'white',
-              fontFamily: 'inherit',
-              color: 'var(--text-primary)',
-              outline: 'none',
-              cursor: 'pointer'
-            }}
-          >
-            {modelOptions.map(m => <option key={m} value={m}>{m}</option>)}
-          </select>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <select 
+              value={selectedCategory} 
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              style={{
+                padding: '8px 12px',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'white',
+                fontFamily: 'inherit',
+                color: 'var(--text-primary)',
+                outline: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="Paid">Paid</option>
+              <option value="Premium">Premium</option>
+              <option value="Fast">Fast</option>
+            </select>
+            
+            <select 
+              value={selectedModel} 
+              onChange={(e) => setSelectedModel(e.target.value)}
+              style={{
+                padding: '8px 12px',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'white',
+                fontFamily: 'inherit',
+                color: 'var(--text-primary)',
+                outline: 'none',
+                cursor: 'pointer',
+                minWidth: '150px'
+              }}
+            >
+              {currentModels.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+
+            <span style={{
+              fontSize: '12px',
+              fontWeight: '600',
+              padding: '4px 8px',
+              backgroundColor: selectedCategory === 'Paid' ? '#fee2e2' : 'var(--bg-app)',
+              color: selectedCategory === 'Paid' ? '#991b1b' : 'var(--text-secondary)',
+              borderRadius: 'var(--radius-sm)',
+              border: '1px solid var(--border-color)'
+            }}>
+              {selectedCategory === 'Paid' ? 'Paid' : 'Free'}
+            </span>
+          </div>
           
           <button 
             className="btn btn-primary" 

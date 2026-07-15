@@ -18,6 +18,13 @@ const sectionColors = [
 
 const getSectionColor = (index) => sectionColors[index % sectionColors.length];
 
+const truncateText = (text, maxLength = 15) => {
+  if (text && text.length > maxLength) {
+    return text.substring(0, maxLength) + '...';
+  }
+  return text;
+};
+
 export default function Sidebar() {
   const { 
     notebooks, sections, pages, 
@@ -150,9 +157,10 @@ export default function Sidebar() {
                 key={sec.id} 
                 className={`nav-item section-item ${selectedSectionId === sec.id ? 'active' : ''}`}
                 onClick={() => setSelectedSectionId(sec.id)}
+                title={sec.title}
               >
                 <div className="section-color-bar" style={{ backgroundColor: getSectionColor(i) }}></div>
-                <span className="nav-item-text">{sec.title}</span>
+                <span className="nav-item-text">{truncateText(sec.title)}</span>
               </div>
             ))}
             {sections.length === 0 && !isAddingSection && (
@@ -193,8 +201,9 @@ export default function Sidebar() {
                 key={page.id} 
                 className={`nav-item ${selectedPageId === page.id ? 'active' : ''}`}
                 onClick={() => setSelectedPageId(page.id)}
+                title={page.title}
               >
-                <span className="nav-item-text" style={{ paddingLeft: '8px' }}>{page.title}</span>
+                <span className="nav-item-text" style={{ paddingLeft: '8px' }}>{truncateText(page.title)}</span>
               </div>
             ))}
             {pages.length === 0 && !isAddingPage && (

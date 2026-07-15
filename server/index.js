@@ -80,7 +80,7 @@ app.post('/api/ai/generate', async (req, res) => {
 
   try {
     const openai = new OpenAI({ apiKey });
-    
+
     const requestPayload = {
       model: modelStr || "gpt-4o",
       messages: [
@@ -91,8 +91,7 @@ app.post('/api/ai/generate', async (req, res) => {
           STRICT RULES:
           - Keep the revision sheet in the exact SAME format and structure as the original sheet.
           - ONLY use information from the provided original text. Do NOT add any external knowledge, facts, or internet data under any circumstances.
-          - Do NOT remove anything important. Condense only the fluff to ensure it fits as a high-yield one-pager for quick revision.
-          - Extract and highlight key facts (Articles, Dates, Committees, Judgments) ONLY if they already exist in the text.`
+          - Do NOT remove anything important. Condense only the fluff to ensure it fits as a high-yield concise for quick revision.`
         },
         {
           role: "user",
@@ -101,7 +100,7 @@ app.post('/api/ai/generate', async (req, res) => {
       ]
     };
 
-    if (modelStr && (modelStr.includes('5.5') || modelStr.includes('o1') || modelStr.includes('o3'))) {
+    if (modelStr && (modelStr.includes('5.5') || modelStr.includes('o1') || modelStr.includes('o3') || modelStr.includes('o4'))) {
       requestPayload.temperature = 1;
     } else {
       requestPayload.temperature = 0.3;

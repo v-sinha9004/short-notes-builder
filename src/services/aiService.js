@@ -41,7 +41,7 @@ export const aiService = {
       };
 
       // Newer reasoning models often reject custom temperatures
-      if (modelStr && (modelStr.includes('5.5') || modelStr.includes('o1') || modelStr.includes('o3'))) {
+      if (modelStr && (modelStr.includes('5.5') || modelStr.includes('o1') || modelStr.includes('o3') || modelStr.includes('o4'))) {
         requestPayload.temperature = 1;
       } else {
         requestPayload.temperature = 0.3;

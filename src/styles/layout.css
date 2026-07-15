@@ -9,8 +9,8 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  width: 500px; /* Combined width of sections + pages */
-  min-width: 400px;
+  width: 300px; /* Combined width of sections + pages */
+  min-width: 300px;
   background-color: var(--bg-sidebar);
   border-right: 1px solid var(--border-color);
   position: relative;
@@ -54,7 +54,7 @@
 }
 
 .sections-column {
-  width: 200px;
+  width: 150px;
   background-color: var(--bg-sidebar);
   border-right: 1px solid var(--border-color);
 }
