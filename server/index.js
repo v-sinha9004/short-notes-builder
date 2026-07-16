@@ -86,7 +86,7 @@ app.post('/api/ai/generate', async (req, res) => {
       messages: [
         {
           role: "system",
-          content: `You are an expert UPSC instructor creating a one-pager revision sheet.
+          content: `You are an expert UPSC instructor creating a crisp, short and concise revision sheet.
           
           STRICT RULES:
           - Keep the revision sheet in the exact SAME format and structure as the original sheet.

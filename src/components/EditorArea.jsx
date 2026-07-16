@@ -3,7 +3,7 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css'; // Quill stylesheet
 import { marked } from 'marked';
 import { useReactToPrint } from 'react-to-print';
-import { Sparkles, FileText, Save, Download } from 'lucide-react';
+import { Sparkles, FileText, Save, Download, Check } from 'lucide-react';
 import { useNoteContext } from '../contexts/NoteContext';
 
 export default function EditorArea() {
@@ -35,6 +35,18 @@ export default function EditorArea() {
   // They both use Quill now, so they hold HTML strings
   const [localContent, setLocalContent] = useState('');
   const [localRevision, setLocalRevision] = useState('');
+  const [savedContent, setSavedContent] = useState('');
+  const [savedRevision, setSavedRevision] = useState('');
+
+  const normalizeHTML = (html) => {
+    if (!html) return '';
+    const trimmed = html.trim();
+    if (trimmed === '<p><br></p>') return '';
+    return trimmed;
+  };
+
+  const hasUnsavedNotes = normalizeHTML(localContent) !== normalizeHTML(savedContent);
+  const hasUnsavedRevision = normalizeHTML(localRevision) !== normalizeHTML(savedRevision);
 
   const revisionRef = useRef();
   
@@ -48,20 +60,25 @@ export default function EditorArea() {
       // Original notes are usually plain text. Convert newlines to HTML so Quill renders them properly.
       const rawContent = activePage.content || '';
       const contentIsHtml = /<[a-z][\s\S]*>/i.test(rawContent);
-      setLocalContent(contentIsHtml ? rawContent : rawContent.replace(/\n/g, '<br>'));
+      const parsedContent = contentIsHtml ? rawContent : rawContent.replace(/\n/g, '<br>');
+      setLocalContent(parsedContent);
+      setSavedContent(parsedContent);
 
       // Revision notes were previously Markdown. If it lacks HTML tags, parse it to HTML for Quill.
       const rawRev = activePage.revisionContent || '';
       const revIsHtml = /<[a-z][\s\S]*>/i.test(rawRev);
       
+      let parsedRev = rawRev;
       if (rawRev && !revIsHtml) {
-        setLocalRevision(marked.parse(rawRev));
-      } else {
-        setLocalRevision(rawRev);
+        parsedRev = marked.parse(rawRev);
       }
+      setLocalRevision(parsedRev);
+      setSavedRevision(parsedRev);
     } else {
       setLocalContent('');
       setLocalRevision('');
+      setSavedContent('');
+      setSavedRevision('');
     }
   }, [activePage?.id]);
 
@@ -76,6 +93,7 @@ export default function EditorArea() {
     setIsSaving(true);
     try {
       await updatePageContent(localContent);
+      setSavedContent(localContent);
     } catch (e) {
       console.error(e);
       setErrorMsg("Failed to save notes");
@@ -89,6 +107,7 @@ export default function EditorArea() {
     setIsSaving(true);
     try {
       await updatePageRevision(localRevision);
+      setSavedRevision(localRevision);
     } catch (e) {
       console.error(e);
       setErrorMsg("Failed to save revision");
@@ -189,11 +208,15 @@ export default function EditorArea() {
              <button 
                className="btn" 
                onClick={handleSaveNotes}
-               disabled={isSaving}
-               style={{ border: '1px solid var(--border-color)', backgroundColor: 'white' }}
+               disabled={isSaving || !hasUnsavedNotes}
+               style={{ 
+                 border: `1px solid ${hasUnsavedNotes ? '#f59e0b' : 'var(--border-color)'}`, 
+                 backgroundColor: hasUnsavedNotes ? '#fffbeb' : 'white',
+                 color: hasUnsavedNotes ? '#b45309' : 'var(--text-secondary)'
+               }}
              >
-               <Save size={16} color="var(--text-secondary)" />
-               {isSaving ? 'Saving...' : 'Save Notes'}
+               {hasUnsavedNotes ? <Save size={16} /> : <Check size={16} color="#10b981" />}
+               {isSaving ? 'Saving...' : hasUnsavedNotes ? 'Save Notes' : 'Saved'}
              </button>
           ) : (
             <>
@@ -208,11 +231,15 @@ export default function EditorArea() {
              <button 
                className="btn" 
                onClick={handleSaveRevision}
-               disabled={isSaving}
-               style={{ border: '1px solid var(--border-color)', backgroundColor: 'white' }}
+               disabled={isSaving || !hasUnsavedRevision}
+               style={{ 
+                 border: `1px solid ${hasUnsavedRevision ? '#f59e0b' : 'var(--border-color)'}`, 
+                 backgroundColor: hasUnsavedRevision ? '#fffbeb' : 'white',
+                 color: hasUnsavedRevision ? '#b45309' : 'var(--text-secondary)'
+               }}
              >
-               <Save size={16} color="var(--text-secondary)" />
-               {isSaving ? 'Saving...' : 'Save Revision'}
+               {hasUnsavedRevision ? <Save size={16} /> : <Check size={16} color="#10b981" />}
+               {isSaving ? 'Saving...' : hasUnsavedRevision ? 'Save Revision' : 'Saved'}
              </button>
             </>
           )}
