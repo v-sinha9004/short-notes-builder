@@ -175,14 +175,17 @@ export default function EditorArea() {
         backgroundColor: '#fff'
       }}>
         
-        <div style={{ display: 'flex', gap: '8px', backgroundColor: 'var(--bg-app)', padding: '4px', borderRadius: 'var(--radius-md)' }}>
+        <div style={{ display: 'flex', gap: '4px', backgroundColor: 'var(--bg-hover)', padding: '4px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
           <button 
             className={`btn ${viewMode === 'original' ? 'active' : ''}`}
             onClick={() => setViewMode('original')}
             style={{ 
-              backgroundColor: viewMode === 'original' ? 'white' : 'transparent',
+              backgroundColor: viewMode === 'original' ? 'var(--accent-primary)' : 'transparent',
               boxShadow: viewMode === 'original' ? 'var(--shadow-sm)' : 'none',
-              color: viewMode === 'original' ? 'var(--text-primary)' : 'var(--text-secondary)'
+              color: viewMode === 'original' ? 'white' : 'var(--text-secondary)',
+              fontWeight: viewMode === 'original' ? '600' : '500',
+              borderRadius: 'var(--radius-sm)',
+              padding: '6px 16px'
             }}
           >
             Original Notes
@@ -192,9 +195,12 @@ export default function EditorArea() {
             onClick={() => setViewMode('revision')}
             disabled={!localRevision && !isGenerating}
             style={{ 
-              backgroundColor: viewMode === 'revision' ? 'white' : 'transparent',
+              backgroundColor: viewMode === 'revision' ? 'var(--accent-primary)' : 'transparent',
               boxShadow: viewMode === 'revision' ? 'var(--shadow-sm)' : 'none',
-              color: viewMode === 'revision' ? 'var(--text-primary)' : 'var(--text-secondary)',
+              color: viewMode === 'revision' ? 'white' : 'var(--text-secondary)',
+              fontWeight: viewMode === 'revision' ? '600' : '500',
+              borderRadius: 'var(--radius-sm)',
+              padding: '6px 16px',
               opacity: (!localRevision && !isGenerating) ? 0.5 : 1
             }}
           >
