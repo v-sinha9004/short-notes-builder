@@ -44,7 +44,7 @@ export const aiService = {
       if (modelStr && (modelStr.includes('5.5') || modelStr.includes('o1') || modelStr.includes('o3') || modelStr.includes('o4'))) {
         requestPayload.temperature = 1;
       } else {
-        requestPayload.temperature = 0.3;
+        requestPayload.temperature = 1;
       }
 
       const response = await openai.chat.completions.create(requestPayload);
